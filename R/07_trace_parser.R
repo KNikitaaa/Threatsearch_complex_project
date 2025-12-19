@@ -171,25 +171,34 @@ parse_traceroute_unix <- function(lines, target = NULL) {
 }
 
 parse_tracert_windows <- function(lines, target = NULL) {
-  # Пример:
+  # Пример (English):
   #  1    <1 ms    <1 ms    <1 ms  192.168.0.1
   #  2     *        *        *     Request timed out.
   #  3    10 ms    11 ms    10 ms  dns.google [8.8.8.8]
+
+  # Пример (Russian):
+  #  1    <1 мс    <1 мс    <1 мс  lt-in-f113.1e100.net [108.177.14.113]
+  #  2     *        *        *     Превышен интервал ожидания для запроса.
   rows <- list()
-  
+
   for (ln in lines) {
-    # пропускаем заголовки
+    # пропускаем заголовки (English and Russian)
     if (grepl("^Tracing\\s+route\\s+to", ln, ignore.case = TRUE)) next
+    if (grepl("^Трассировка\\s+маршрута\\s+к", ln, ignore.case = TRUE)) next
     if (grepl("^over\\s+a\\s+maximum", ln, ignore.case = TRUE)) next
+    if (grepl("^с\\s+максимальным\\s+числом", ln, ignore.case = TRUE)) next
     if (grepl("^Trace\\s+complete", ln, ignore.case = TRUE)) next
-    
+    if (grepl("^Трассировка\\s+завершена", ln, ignore.case = TRUE)) next
+
     if (!grepl("^\\s*\\d+\\s+", ln)) next
-    
+
     hop <- as.integer(sub("^\\s*(\\d+).*$", "\\1", ln))
     rest <- sub("^\\s*\\d+\\s+", "", ln)
-    
-    # Таймаут
-    if (grepl("Request\\s+timed\\s+out", rest, ignore.case = TRUE) || grepl("^\\*\\s+\\*\\s+\\*", rest)) {
+
+    # Таймаут (English and Russian)
+    if (grepl("Request\\s+timed\\s+out", rest, ignore.case = TRUE) ||
+        grepl("Превышен\\s+интервал\\s+ожидания", rest, ignore.case = TRUE) ||
+        grepl("^\\*\\s+\\*\\s+\\*", rest)) {
       rows[[length(rows) + 1]] <- data.frame(
         target = target,
         hop = hop,
@@ -204,11 +213,11 @@ parse_tracert_windows <- function(lines, target = NULL) {
       next
     }
     
-    # RTT: могут быть "10 ms" или "<1 ms"
-    rtts <- regmatches(rest, gregexpr("(<\\s*\\d+|\\d+)\\s*ms", rest, ignore.case = TRUE, perl = TRUE))[[1]]
+    # RTT: могут быть "10 ms"/"10 мс" или "<1 ms"/"<1 мс"
+    rtts <- regmatches(rest, gregexpr("(<\\s*\\d+|\\d+)\\s*(ms|мс)", rest, ignore.case = TRUE, perl = TRUE))[[1]]
     rtt_vals <- if (length(rtts) > 0) {
       v <- tolower(rtts)
-      v <- gsub("\\s*ms", "", v)
+      v <- gsub("\\s*(ms|мс)", "", v)  # Убираем и английские и русские единицы
       v <- gsub("\\s+", "", v)
       v <- ifelse(grepl("^<", v), sub("^<", "", v), v)
       as.numeric(v)

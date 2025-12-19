@@ -30,10 +30,24 @@ safe_system2 <- function(command, args = character(), timeout = NULL) {
       if (file.exists(stdout)) unlink(stdout)
       if (file.exists(stderr)) unlink(stderr)
     }, add = TRUE)
-    
+
     status <- suppressWarnings(system2(command, args = args, stdout = stdout, stderr = stderr))
-    txt <- c(readLines(stdout, warn = FALSE), readLines(stderr, warn = FALSE))
-    
+    txt <- c(readLines(stdout, warn = FALSE, encoding = "UTF-8"), readLines(stderr, warn = FALSE, encoding = "UTF-8"))
+
+    # На Windows конвертируем из системной кодировки в UTF-8 если есть проблемы
+    if (.Platform$OS.type == "windows" && length(txt) > 0) {
+      # Проверяем есть ли нечитаемые символы (корявые байты)
+      has_bad_chars <- any(grepl("[\x80-\xFF]{2,}", txt, useBytes = TRUE) & !grepl("[а-яё]", txt, ignore.case = TRUE))
+      if (has_bad_chars) {
+        # Пробуем конвертировать из CP1251 (Windows Cyrillic) в UTF-8
+        txt <- iconv(txt, from = "CP1251", to = "UTF-8", sub = "byte")
+        # Если всё ещё проблемы, пробуем другие кодировки
+        if (any(grepl("[\x80-\xFF]{2,}", txt, useBytes = TRUE))) {
+          txt <- iconv(txt, from = "CP866", to = "UTF-8", sub = "byte")
+        }
+      }
+    }
+
     if (!is.null(status) && status != 0) {
       # не валим, а возвращаем как есть, но добавим предупреждение
       warning(sprintf("Команда завершилась с кодом %s: %s %s", status, command, paste(args, collapse = " ")))
