@@ -1,5 +1,12 @@
 ---
-title: "README"
-output: html_document
+title: "netwalker: Анализ автономных систем и маршрутизации Интернета"
+output: github_document
 ---
 
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  echo = TRUE,
+  warning = FALSE,
+  message = FALSE,
+  fig.path = "man/figures/README-"
+)
