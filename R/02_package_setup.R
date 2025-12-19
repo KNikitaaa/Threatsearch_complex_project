@@ -1,3 +1,5 @@
+#' Initialize package directories
+#' @export
 init_package_dirs <- function() {
   log_message("INFO", "Инициализация директорий...")
   
@@ -36,6 +38,8 @@ init_package_dirs <- function() {
   return(success)
 }
 
+#' Install system dependencies
+#' @export
 install_system_deps <- function(os = "auto", silent = FALSE) {
   if (os == "auto") {
     sys_info <- Sys.info()
@@ -126,6 +130,8 @@ install_system_deps <- function(os = "auto", silent = FALSE) {
   return(success)
 }
 
+#' Check package readiness
+#' @export
 check_package_readiness <- function(verbose = TRUE) {
   results <- list(
     timestamp = Sys.time(),
@@ -313,6 +319,8 @@ check_package_readiness <- function(verbose = TRUE) {
   invisible(results)
 }
 
+#' Update package database
+#' @export
 update_package_database <- function(force = FALSE, verbose = TRUE) {
   if (verbose) {
     log_message("INFO", "Обновление базы данных...")
@@ -368,6 +376,8 @@ update_package_database <- function(force = FALSE, verbose = TRUE) {
   }
 }
 
+#' Get package information
+#' @export
 get_package_info <- function(detailed = FALSE) {
   info <- list(
     package = list(
@@ -412,6 +422,8 @@ get_package_info <- function(detailed = FALSE) {
   return(info)
 }
 
+#' Clear package cache
+#' @export
 clear_package_cache <- function(what = "all", confirm = TRUE) {
   if (confirm) {
     if (what == "all") {
@@ -475,6 +487,8 @@ clear_package_cache <- function(what = "all", confirm = TRUE) {
   }
 }
 
+#' Export package information
+#' @export
 export_package_info <- function(filepath = NULL, format = "json") {
   info <- get_package_info(detailed = TRUE)
   
