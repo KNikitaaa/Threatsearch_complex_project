@@ -1,13 +1,13 @@
 #' Initialize package directories
 #' @export
 init_package_dirs <- function() {
-  log_message("INFO", "Инициализация директорий...")
-  
+  log_message("INFO", "Initializing directories...")
+
   dirs <- list(
-    "Кэш" = get_cache_dir(),
-    "Данные" = get_data_dir(),
-    "Логи" = get_logs_dir(),
-    "Временные файлы" = get_temp_dir()
+    "Cache" = get_cache_dir(),
+    "Data" = get_data_dir(),
+    "Logs" = get_logs_dir(),
+    "Temp files" = get_temp_dir()
   )
   
   success <- TRUE
@@ -21,7 +21,7 @@ init_package_dirs <- function() {
       if (created) {
         log_message("INFO", paste("✓", dir_name, ":", dir_path))
       } else {
-        log_message("ERROR", paste("✗ Ошибка:", dir_name))
+        log_message("ERROR", paste("✗ Error:", dir_name))
         success <- FALSE
       }
     } else {

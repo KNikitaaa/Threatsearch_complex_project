@@ -1,15 +1,15 @@
 #' Traceroute core runner
 #'
-#' Запускает traceroute/tracert, возвращает "сырые" строки + метаданные.
+#' Runs traceroute/tracert, returns raw output strings + metadata.
 #'
-#' @param target Хост/домен/IP.
-#' @param max_hops Максимум хопов.
-#' @param timeout Таймаут (сек). Для tracert интерпретация отличается.
-#' @param queries Кол-во проб на хоп (Linux/mac traceroute).
-#' @param method Способ запуска: "system" (через system2).
-#' @param ... Доп. параметры (пока не используются).
+#' @param target Host/domain/IP.
+#' @param max_hops Maximum hops.
+#' @param timeout Timeout (sec). For tracert interpretation differs.
+#' @param queries Number of probes per hop (Linux/mac traceroute).
+#' @param method Execution method: "system" (via system2).
+#' @param ... Additional parameters (not used yet).
 #'
-#' @return Объект класса trace_raw (list).
+#' @return Object of class trace_raw (list).
 #' @export
 trace_run <- function(target,
                       max_hops = 30,
@@ -64,7 +64,7 @@ trace_run_many <- function(targets,
                            ...) {
   method <- match.arg(method)
   if (parallel) {
-    warning("parallel=TRUE пока не реализован; выполняю последовательно.")
+    warning("parallel=TRUE not implemented yet; running sequentially.")
   }
   lapply(targets, function(tg) trace_run(
     target = tg,
