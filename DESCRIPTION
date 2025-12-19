@@ -6,7 +6,7 @@ Authors@R:
 Description: Сбор, анализ и визуализация данных об автономных системах и сетевых маршрутах.
 License: MIT
 Encoding: UTF-8
-Imports: 
+Imports:
     dplyr,
     tidyr,
     purrr,
@@ -19,7 +19,11 @@ Imports:
     visNetwork,
     processx,
     duckdb,
-    yaml
+    yaml,
+    ggplot2,
+    plotly,
+    RColorBrewer,
+    scales
 Suggests: 
     testthat,
     knitr,

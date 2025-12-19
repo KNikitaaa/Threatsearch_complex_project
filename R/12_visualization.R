@@ -10,6 +10,9 @@
 #' @importFrom dplyr mutate filter group_by summarize arrange
 #' @importFrom tidyr drop_na
 #' @importFrom scales comma
+#' @importFrom RColorBrewer brewer.pal
+#' @importFrom grDevices colorRampPalette
+#' @importFrom shiny div fluidRow column
 NULL
 
 #' Create RTT Timeline Plot
@@ -23,7 +26,7 @@ NULL
 create_rtt_plot <- function(trace_data, title = "RTT by Hop") {
   if (is.null(trace_data) || nrow(trace_data) == 0) {
     return(plotly::plot_ly() %>%
-             layout(title = "No data available"))
+             layout(title = list(text = "No data available")))
   }
 
   # Prepare data
@@ -33,7 +36,7 @@ create_rtt_plot <- function(trace_data, title = "RTT by Hop") {
 
   if (nrow(plot_data) == 0) {
     return(plotly::plot_ly() %>%
-             layout(title = "No RTT data available"))
+             layout(title = list(text = "No RTT data available")))
   }
 
   # Create plot
@@ -163,7 +166,7 @@ create_geo_map <- function(trace_data, title = "Network Route Map") {
 create_asn_chart <- function(trace_data, title = "ASN Distribution") {
   if (is.null(trace_data) || nrow(trace_data) == 0) {
     return(plotly::plot_ly() %>%
-             layout(title = "No data available"))
+             layout(title = list(text = "No data available")))
   }
 
   # Prepare ASN data
@@ -179,7 +182,7 @@ create_asn_chart <- function(trace_data, title = "ASN Distribution") {
 
   if (nrow(asn_data) == 0) {
     return(plotly::plot_ly() %>%
-             layout(title = "No ASN data available"))
+             layout(title = list(text = "No ASN data available")))
   }
 
   # Create horizontal bar chart
@@ -217,7 +220,7 @@ create_asn_chart <- function(trace_data, title = "ASN Distribution") {
 create_country_pie <- function(trace_data, title = "Geographic Distribution") {
   if (is.null(trace_data) || nrow(trace_data) == 0) {
     return(plotly::plot_ly() %>%
-             layout(title = "No data available"))
+             layout(title = list(text = "No data available")))
   }
 
   # Prepare country data
@@ -236,7 +239,7 @@ create_country_pie <- function(trace_data, title = "Geographic Distribution") {
 
   if (nrow(country_data) == 0) {
     return(plotly::plot_ly() %>%
-             layout(title = "No country data available"))
+             layout(title = list(text = "No country data available")))
   }
 
   # Create pie chart
@@ -272,7 +275,7 @@ create_country_pie <- function(trace_data, title = "Geographic Distribution") {
 create_latency_heatmap <- function(trace_data, title = "Latency Heatmap") {
   if (is.null(trace_data) || nrow(trace_data) == 0) {
     return(plotly::plot_ly() %>%
-             layout(title = "No data available"))
+             layout(title = list(text = "No data available")))
   }
 
   # Prepare data for heatmap
@@ -287,7 +290,7 @@ create_latency_heatmap <- function(trace_data, title = "Latency Heatmap") {
 
   if (nrow(heatmap_data) == 0) {
     return(plotly::plot_ly() %>%
-             layout(title = "No latency data available"))
+             layout(title = list(text = "No latency data available")))
   }
 
   # Create heatmap
