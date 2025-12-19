@@ -1,0 +1,15 @@
+Package: threatsearch
+Type: Package
+Title: Threat Search and Network Route Analysis
+Version: 0.1.0
+Authors@R: c(
+    person("Team", "Threatsearch", role = c("aut", "cre"))
+)
+Encoding: UTF-8
+LazyData: true
+
+Imports:
+    data.table,
+    ipaddress
+
+RoxygenNote: 7.3.2
