@@ -1,0 +1,94 @@
+# ====================================================
+# Docker Compose конфигурация для NetWalker
+# Запуск: docker-compose up -d
+# Остановка: docker-compose down
+# Просмотр логов: docker-compose logs -f
+# ====================================================
+
+version: '3.8'
+
+services:
+  netwalker-app:
+    container_name: netwalker-app
+    build:
+      context: ../..  # Поднимаемся на два уровня вверх (от inst/extras)
+      dockerfile: inst/extras/Dockerfile
+    image: netwalker:latest
+    ports:
+      - "3838:3838"    # Основное приложение
+      - "8787:8787"    # RStudio Server (опционально)
+    volumes:
+      - netwalker-data:/srv/shiny-server/netwalker/data
+      - ./logs:/var/log/shiny-server
+      # Для разработки можно монтировать исходный код:
+      # - ../../inst/shinyapp:/srv/shiny-server/netwalker
+    environment:
+      - SHINY_PORT=3838
+      - R_LIBS_USER=/usr/local/lib/R/site-library
+      - TZ=Europe/Moscow
+      - MAX_UPLOAD_SIZE=10
+    restart: unless-stopped
+    networks:
+      - netwalker-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3838"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # Опционально: База данных для хранения результатов
+  netwalker-db:
+    container_name: netwalker-db
+    image: postgres:15-alpine
+    environment:
+      - POSTGRES_USER=netwalker
+      - POSTGRES_PASSWORD=netwalker_pass
+      - POSTGRES_DB=netwalker_db
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+      - ./init-db.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+      - "5432:5432"
+    networks:
+      - netwalker-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U netwalker"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Опционально: Админка базы данных (pgAdmin)
+  pgadmin:
+    container_name: netwalker-pgadmin
+    image: dpage/pgadmin4:latest
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=admin@netwalker.local
+      - PGADMIN_DEFAULT_PASSWORD=admin_pass
+      - PGADMIN_CONFIG_SERVER_MODE=False
+    volumes:
+      - pgadmin-data:/var/lib/pgadmin
+    ports:
+      - "5050:80"
+    networks:
+      - netwalker-network
+    restart: unless-stopped
+    depends_on:
+      - netwalker-db
+
+networks:
+  netwalker-network:
+    driver: bridge
+    name: netwalker-network
+
+volumes:
+  netwalker-data:
+    name: netwalker-data
+    driver: local
+  postgres-data:
+    name: netwalker-postgres-data
+    driver: local
+  pgadmin-data:
+    name: netwalker-pgadmin-data
+    driver: local
