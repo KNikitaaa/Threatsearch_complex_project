@@ -1,15 +1,30 @@
-Package: threatsearch
-Type: Package
-Title: Threat Search and Network Route Analysis
+Package: netwalker
+Title: Анализ автономных систем и маршрутизации Интернета
 Version: 0.1.0
-Authors@R: c(
-    person("Team", "Threatsearch", role = c("aut", "cre"))
-)
+Authors@R: 
+    person("Team", "NetWalker", email = "team@example.com", role = c("aut", "cre"))
+Description: Сбор, анализ и визуализация данных об автономных системах и сетевых маршрутах.
+License: MIT
 Encoding: UTF-8
-LazyData: true
-
-Imports:
+Imports: 
+    dplyr,
+    tidyr,
+    purrr,
+    stringr,
+    httr,
+    jsonlite,
     data.table,
-    ipaddress
-
-RoxygenNote: 7.3.2
+    shiny,
+    leaflet,
+    visNetwork,
+    processx,
+    duckdb,
+    yaml
+Suggests: 
+    testthat,
+    knitr,
+    rmarkdown,
+    pkgdown
+VignetteBuilder: knitr
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.3.3
