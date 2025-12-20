@@ -572,6 +572,9 @@ c("dplyr", "magrittr", "tidyr", "readr", "httr", "jsonlite",
 Установка зависимостей разработки
 install.packages(c("devtools", "roxygen2", "testthat", "knitr"))
 
+Установка пакета
+remotes::install_github("https://github.com/KNikitaaa/Threatsearch_complex_project")
+
 Загрузка пакета для разработки
 devtools::load_all()
 
@@ -586,4 +589,5 @@ devtools::document()
 # Заключение
 
   Internet Structure Explorer предоставляет полный набор инструментов для исследования и анализа структуры глобального интернета. От сбора данных из публичных источников до интерактивной визуализации и контейнеризации - проект охватывает все аспекты анализа сетевой инфраструктуры.
+
 
