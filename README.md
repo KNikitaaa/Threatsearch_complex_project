@@ -242,3 +242,100 @@ Internet Structure Explorer - это комплексный R-пакет для 
     print(google_info)
        asn organization country_code country_name total_ip_ranges total_ip_count data_sources
      1 15169 Google LLC           US United States              25       6553600   unified_as_data
+
+# Модуль визуализации (visualization.R)
+
+## Интерактивное веб-приложение Shiny
+
+### `create_shiny_app()`
+
+Создает полнофункциональное Shiny-приложение для исследования данных.
+
+    Создание приложения
+    app <- create_shiny_app(as_data = unified_data)
+
+    Запуск
+    shiny::runApp(app)
+
+### Структура приложения
+
+Приложение включает следующие вкладки:
+
+1.  Обзор (Overview): Общая статистика и распределения
+2.  Анализ AS (AS Analysis): Детальный анализ автономных систем
+3.  Географический вид (Geographic View): Интерактивная карта мира
+4.  Граф сети (Network Graph): Визуализация связей между AS
+5.  Трассировка (Traceroute Explorer): Интерактивная трассировка
+    маршрутов
+6.  Таблица данных (Data Table): Полная таблица данных
+
+### `run_shiny_app()`
+
+Запускает Shiny-приложение с демо-данными.
+
+    Быстрый запуск с демо-данными
+    run_shiny_app()
+
+### `create_network_plot()` и `create_geographic_map()`
+
+Создание статических визуализаций.
+
+    Сетевой граф
+    network_plot <- create_network_plot(as_data, traceroute_data)
+
+    Географическая карта
+    world_map <- create_geographic_map(as_data)
+
+# Модуль утилит (utilities.R)
+
+## Вспомогательные функции
+
+### Функции работы с IP-адресами
+
+    Валидация IP
+    validate_ip("192.168.1.1")  # TRUE
+    validate_ip("256.1.1.1")    # FALSE
+
+    Преобразование IP
+    ip_numeric <- ip_to_numeric("192.168.1.1")  # 3232235777
+    ip_string <- numeric_to_ip(3232235777)      # "192.168.1.1"
+
+    Проверка диапазона
+    ip_in_range("192.168.1.50", "192.168.1.0", "192.168.1.255")  # TRUE
+
+### `ip_to_asn()`
+
+Поиск ASN по IP-адресу.
+
+    Поиск ASN для IP
+    asn <- ip_to_asn("8.8.8.8", dbip_data)  # 15169
+
+### Метрики связности
+
+    Расчет метрик связности
+    metrics <- calculate_connectivity_metrics(as_data, traceroute_data)
+
+    Структура метрик
+    str(metrics)
+     List of 12
+      $ total_asns               : int 500
+      $ total_ip_ranges          : int 10000
+      $ total_ip_space           : num 2.5e+09
+      $ countries_with_asns      : int 120
+      $ continents_represented   : int 6
+      $ top_asn_concentration    : data.frame [50 × 4]
+      $ total_traceroutes        : int 10
+      $ average_hops             : num 15.2
+      $ average_rtt              : num 45.8
+      $ hop_distribution         : table [1:20]
+      $ rtt_distribution         : Named num [1:3] 12.3 45.8 89.2
+      $ average_as_path_length   : num 4.2
+
+### Генерация тестовых данных
+
+    Генерация случайных IP
+    random_ips <- generate_random_ips(100)
+
+    Форматирование информации об AS
+    formatted <- format_as_info(15169, "Google LLC", "US")
+     "AS15169 (Google LLC, US)"
