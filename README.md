@@ -339,3 +339,111 @@ Internet Structure Explorer - это комплексный R-пакет для 
     Форматирование информации об AS
     formatted <- format_as_info(15169, "Google LLC", "US")
      "AS15169 (Google LLC, US)"
+
+# Docker-контейнеризация
+
+## Архитектура контейнеров
+
+Проект включает полную Docker-контейнеризацию для легкого развертывания:
+
+### Основные сервисы
+
+1.  internet-structure-app: Основное Shiny-приложение
+2.  internet-structure-db: PostgreSQL база данных
+3.  internet-structure-redis: Redis для кеширования
+4.  internet-structure-nginx: Nginx обратный прокси (production)
+5.  internet-structure-worker: Фоновый сборщик данных
+
+### Docker Compose конфигурация
+
+``` yaml
+version: '3.8'
+services:
+  internet-structure-app:
+    build:
+      context: .
+      dockerfile: inst/docker/Dockerfile
+    ports:
+      - "3838:3838"
+    environment:
+      - R_ENV=production
+    depends_on:
+      - internet-structure-db
+      - internet-structure-redis
+
+  internet-structure-db:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_DB: internet_structure
+      POSTGRES_USER: internet_user
+      POSTGRES_PASSWORD: internet_pass_2024
+
+  internet-structure-redis:
+    image: redis:7-alpine
+```
+
+## Запуск и развертывание
+
+### Быстрый старт
+
+    Запуск всех сервисов
+    docker-compose up -d
+
+    Доступ к приложению
+    http://localhost:3838
+
+### Production развертывание
+
+    Запуск с production профилем (включая Nginx)
+    docker-compose --profile production up -d
+
+    Запуск с worker'ом для фонового сбора данных
+    docker-compose --profile worker up -d
+
+# Примеры использования
+
+## Базовый рабочий процесс
+
+    Загрузка пакета
+    library(internetstructure)
+
+     1. Сбор данных
+    dbip_data <- collect_dbip_data()
+    maxmind_data <- collect_maxmind_data()
+
+     2. Создание унифицированного датасета
+    as_data <- create_as_dataframe(dbip_data, maxmind_data)
+
+     3. Анализ трассировки
+    trace_result <- run_traceroute("8.8.8.8")
+    parsed_trace <- parse_traceroute_output(trace_result)
+    as_path <- extract_as_path(parsed_trace, dbip_data)
+
+     4. Запуск визуализации
+    run_shiny_app(as_data = as_data)
+
+## Продвинутый анализ
+
+     Множественная трассировка
+    targets <- c("google.com", "github.com", "stackoverflow.com")
+    batch_results <- batch_traceroute(targets)
+
+     Расчет метрик
+    metrics <- calculate_connectivity_metrics(as_data, batch_results)
+
+     Сохранение результатов
+    save_as_data(as_data, "internet_structure.rds", "rds")
+
+## Работа с Docker
+
+     Сборка и запуск
+    docker-compose up --build -d
+
+     Просмотр логов
+    docker-compose logs -f internet-structure-app
+
+     Масштабирование worker'ов
+    docker-compose up -d --scale internet-structure-worker=3
+
+     Остановка
+    docker-compose down
